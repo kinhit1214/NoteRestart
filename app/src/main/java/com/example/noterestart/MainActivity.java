@@ -10,6 +10,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
+import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements NoteMainFragment.Contract, CreatNoteFragment.Contract {
     private static final String NOTES_LIST_FRAGMENT_TAG="NOTES_LIST_FRAGMENT_TAG";
@@ -18,26 +22,42 @@ public class MainActivity extends AppCompatActivity implements NoteMainFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         showNoteMain();
+        initBottomNavigation();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_bottom_line,menu);
-        return true;
+    private void initBottomNavigation() {
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.creat_menu:
+                                onCreatNote();
+                                return true;
+                            case R.id.title_menu:
+                                getSupportFragmentManager()
+                                        .beginTransaction().
+                                        replace(R.id.container_fragments,getSupportFragmentManager().findFragmentByTag(NOTES_LIST_FRAGMENT_TAG))
+                                        .commitAllowingStateLoss();
+                                return true;
+                            case R.id.settings_menu:
+                                onSettings();
+                                return true;
+                        };
+                        return false;
+                    }
+                }
+        );
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int idMenuItem = item.getItemId();
-        switch (idMenuItem){
-            case (R.id.title_menu):;
-            case (R.id.creat_menu):{
-                onCreatNote();
-                return true;
-            }
-            case (R.id.settings_menu):;
-        }
-        return super.onOptionsItemSelected(item);
+
+
+    private void onSettings() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container_fragments,new SettingsFragment())
+                .commitAllowingStateLoss();
     }
 
     private void showNoteMain() {
