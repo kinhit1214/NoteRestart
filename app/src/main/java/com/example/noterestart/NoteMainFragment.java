@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class NoteMainFragment extends Fragment {
-    private Button creatButton;
     private LinearLayout linerNotes;
 
     private ArrayList<NoteEntity> notes = new ArrayList<>();
@@ -30,7 +29,6 @@ public class NoteMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_main, container, false);
-        creatButton = view.findViewById(R.id.add_note);
         linerNotes = view.findViewById(R.id.liner_notes);
         renderList(notes);
         return view;
@@ -39,9 +37,6 @@ public class NoteMainFragment extends Fragment {
     @Override
     public void onViewCreated(View view,Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        creatButton.setOnClickListener(v -> {
-            getContract().onCreatNote();
-        });
     }
     protected void addNote(NoteEntity note){
         notes.add(note);
@@ -85,7 +80,6 @@ public class NoteMainFragment extends Fragment {
         }
     }
     interface Contract{
-        void onCreatNote();
         void onNote(NoteEntity note);
     }
 }

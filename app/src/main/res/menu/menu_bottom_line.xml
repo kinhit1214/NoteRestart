@@ -4,7 +4,7 @@
     <item android:id="@+id/title_menu"
         android:title="Главная"
         />
-    <item android:id="@+id/edit_menu"
+    <item android:id="@+id/creat_menu"
         android:title="Добавить заметку"
         />
     <item android:id="@+id/settings_menu"
