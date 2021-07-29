@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -32,8 +35,37 @@ public class NoteMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_main, container, false);
-        linerNotes = view.findViewById(R.id.liner_notes);
-        renderList(notes);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        AdapterItem adapterItem = new AdapterItem((ArrayList<NoteEntity>) notes);
+        recyclerView.setAdapter(adapterItem);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapterItem.setListener(
+                new AdapterItem.OnItemClickListenner() {
+                                    @Override
+                                    public void OnItemClick(int position) {
+                                        getContract().onNote(notes.get(position));
+                                    }
+
+                    @Override
+                    public void OnItemLongClick(View parent,int position) {
+                        PopupMenu popupMenu = new PopupMenu(getContext(),parent);
+                        popupMenu.inflate(R.menu.popup_menu_note);
+                        popupMenu.show();
+                        popupMenu
+                            .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                    if (item.getItemId() == R.id.menu_note_delte) {
+                                        notes.remove(position);
+                                        return true;
+                                    }
+                                    return false;
+                        }
+                    });
+                    }
+                }
+        );
         return view;
     }
 
@@ -41,45 +73,9 @@ public class NoteMainFragment extends Fragment {
     public void onViewCreated(View view,Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
+
     protected void addNote(NoteEntity note){
         notes.add(note);
-    }
-
-    private void renderList(List<NoteEntity> notes) {
-        linerNotes.removeAllViews();
-        for (NoteEntity note :
-                notes) {
-            linerNotes.addView(generetNoteView(note));
-        }
-    }
-
-    private View generetNoteView(NoteEntity note) {
-        View noteView = getLayoutInflater().inflate(R.layout.note,null);
-        TextView noteTitle = (TextView) noteView.findViewById(R.id.note_title);
-        TextView noteTheme = (TextView) noteView.findViewById(R.id.note_theme);
-        TextView noteTime = (TextView) noteView.findViewById(R.id.note_time);
-        noteTitle.setText(String.format(Locale.getDefault(), "%s",note.title ));
-        noteTheme.setText(String.format(Locale.getDefault(), "%s", note.theme));
-        noteTime.setText(String.format(Locale.getDefault(), "%s", note.data));
-        noteView.setOnClickListener(v -> getContract().onNote(note));
-        noteView.setOnLongClickListener(v -> {
-            PopupMenu popupMenu = new PopupMenu(getContext(),noteView);
-            popupMenu.inflate(R.menu.popup_menu_note);
-            popupMenu.show();
-            popupMenu
-                    .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            if (item.getItemId() == R.id.menu_note_delte) {
-                                noteTitle.setText(String.format(Locale.getDefault(), "%s","Удален"));
-                                return true;
-                            }
-                            return false;
-                        }
-                    });
-            return true;
-        });
-        return noteView;
     }
 
     private Contract getContract(){
