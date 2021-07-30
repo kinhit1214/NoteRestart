@@ -66,16 +66,16 @@ public class NoteMainFragment extends Fragment {
                         popupMenu.inflate(R.menu.popup_menu_note);
                         popupMenu.show();
                         popupMenu
-                                .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                    @Override
-                                    public boolean onMenuItemClick(MenuItem item) {
-                                        if (item.getItemId() == R.id.menu_note_delte) {
+                                .setOnMenuItemClickListener(item -> {
+                                    switch (item.getItemId()){
+                                        case R.id.menu_note_delte:
                                             notes.remove(position);
                                             adapterItem.notifyDataSetChanged();
                                             return true;
-                                        }
-                                        return false;
+                                        case R.id.menu_note_red:
+                                            getContract().onRedNote(notes.get(position),position);
                                     }
+                                    return false;
                                 });
                     }
                 }
@@ -105,5 +105,6 @@ public class NoteMainFragment extends Fragment {
     }
     interface Contract{
         void onNote(NoteEntity note);
+        void onRedNote(NoteEntity note,int position);
     }
 }

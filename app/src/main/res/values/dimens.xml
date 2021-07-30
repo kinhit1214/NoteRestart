@@ -2,4 +2,11 @@
 <resources>
     <dimen name="margin_theme">5dp</dimen>
     <dimen name="margin_time" />
+    <dimen name="separator">10dp</dimen>
+    <dimen name="card_radius">10dp</dimen>
+    <dimen name="card_elevation">5dp</dimen>
+    <dimen name="size_text_title">40sp</dimen>
+    <dimen name="text_size_theme">20sp</dimen>
+    <dimen name="text_size_data">15sp</dimen>
+    <dimen name="height_bottom_navigation">55sp</dimen>
 </resources>

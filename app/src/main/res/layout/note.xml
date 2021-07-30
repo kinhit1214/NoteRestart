@@ -3,9 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="5dp"
-    android:id="@+id/box_note">
+    app:cardCornerRadius="@dimen/card_radius"
+    app:cardElevation="@dimen/card_elevation"
+    android:id="@+id/box_note"
+    android:layout_marginEnd="@dimen/separator"
+    android:layout_marginStart="@dimen/separator">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Name note"
         android:textColor="@color/black"
-        android:textSize="40sp" />
+        android:textSize="@dimen/size_text_title" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,19 +30,18 @@
             android:id="@+id/note_theme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_theme"
+            android:layout_marginStart="@dimen/separator"
             android:text="Theme note"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_size_theme"
             android:textColor="@color/black"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/note_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_time"
             android:gravity="end"
             android:text="time note"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_size_data"
             android:textColor="@color/black"/>
     </LinearLayout>
 </LinearLayout>

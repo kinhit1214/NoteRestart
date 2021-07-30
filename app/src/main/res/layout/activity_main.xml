@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
     <FrameLayout
+        android:layout_marginTop="@dimen/separator"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/container_fragments"
@@ -18,10 +18,9 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
-        android:layout_height="40sp"
+        android:layout_height="@dimen/height_bottom_navigation"
         android:layout_gravity="bottom"
-        android:background="@color/white"
-        android:elevation="10dp"
+        android:background="@color/AliceBlue"
         app:menu="@menu/menu_bottom_line"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

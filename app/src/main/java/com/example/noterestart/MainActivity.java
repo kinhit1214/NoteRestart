@@ -16,7 +16,11 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements NoteMainFragment.Contract, CreatNoteFragment.Contract {
-    private static final String NOTES_LIST_FRAGMENT_TAG="NOTES_LIST_FRAGMENT_TAG";
+
+    private static final String NOTE_BOX_KEY="NOTE_BOX_KEY";
+
+    NoteMainFragment noteMainFragment = new NoteMainFragment();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,30 +29,15 @@ public class MainActivity extends AppCompatActivity implements NoteMainFragment.
         initBottomNavigation();
     }
 
-    private void initBottomNavigation() {
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.creat_menu:
-                                onCreatNote();
-                                return true;
-                            case R.id.title_menu:
-                                getSupportFragmentManager()
-                                        .beginTransaction().
-                                        replace(R.id.container_fragments,getSupportFragmentManager().findFragmentByTag(NOTES_LIST_FRAGMENT_TAG))
-                                        .commitAllowingStateLoss();
-                                return true;
-                            case R.id.settings_menu:
-                                onSettings();
-                                return true;
-                        };
-                        return false;
-                    }
-                }
-        );
+    public void showNote(NoteEntity note) {
+        Bundle bundle = new Bundle();
+        bundle.putStringArray(NOTE_BOX_KEY,new String[]{note.title,note.theme,note.text});
+        Fragment fragNote = new CreatNoteFragment();
+        fragNote.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container_fragments,fragNote)
+                .commitAllowingStateLoss();
     }
 
 
@@ -63,43 +52,68 @@ public class MainActivity extends AppCompatActivity implements NoteMainFragment.
     private void showNoteMain() {
         getSupportFragmentManager()
                 .beginTransaction().
-                add(R.id.container_fragments,new NoteMainFragment(),"NOTES_LIST_FRAGMENT_TAG")
+                add(R.id.container_fragments,noteMainFragment)
                 .commitAllowingStateLoss();
     }
 
-    public void onCreatNote() {
-        showCreatNote(null);
-    }
-
-    private void showCreatNote(NoteEntity note) {
+    private void showCreatNote() {
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(null)
                 .replace(R.id.container_fragments,new CreatNoteFragment())
                 .commitAllowingStateLoss();
+    }
+
+    private void showRedNote(NoteEntity note,int position) {
+        Bundle bundle = new Bundle();
+        bundle.putStringArray(NOTE_BOX_KEY,new String[]{note.title,note.theme,note.text,String.valueOf(position)});
+        Fragment fragRedNote = new CreatNoteFragment();
+        fragRedNote.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container_fragments,fragRedNote)
+                .commitAllowingStateLoss();
+    }
+
+    private void initBottomNavigation() {
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.creat_menu:
+                                onCreatNote();
+                                return true;
+                            case R.id.title_menu:
+                                getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.container_fragments,noteMainFragment)
+                                        .commitAllowingStateLoss();
+                                return true;
+                            case R.id.settings_menu:
+                                onSettings();
+                                return true;
+                        };
+                        return false;
+                    }
+                }
+        );
     }
 
     @Override
     public void onNote(NoteEntity note){showNote(note);}
 
-    public void showNote(NoteEntity note) {
-        Bundle args = new Bundle();
-        args.putString("putNote", String.valueOf(note.getId()));
-        getSupportFragmentManager()
-                .beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.container_fragments,new CreatNoteFragment())
-                .commit();
-    }
+    @Override
+    public void onRedNote(NoteEntity note,int position) {showRedNote(note,position);}
 
-    public void creatNote(NoteEntity note){
-        showCreatNote(note);
+    public void onCreatNote(){
+        showCreatNote();
     }
 
     @Override
     public void onSaveNote(NoteEntity note) {
         getSupportFragmentManager().popBackStack();
-        NoteMainFragment noteMainFragment =(NoteMainFragment)getSupportFragmentManager() .findFragmentByTag(NOTES_LIST_FRAGMENT_TAG);
         noteMainFragment.addNote(note);
     }
 }

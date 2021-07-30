@@ -22,7 +22,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:id="@+id/edit_name" />
+            android:id="@+id/edit_name"
+            android:elevation="1dp"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,11 +41,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:id="@+id/edit_theme"
-            android:elevation="10dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="10dp"/>
+            android:elevation="1dp" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
@@ -53,7 +50,8 @@
         android:layout_weight="9"
         android:id="@+id/edit_text"
         android:gravity="start|top"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:elevation="1dp"/>
 
     <LinearLayout
         android:id="@+id/layout_creat_button"
