@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,17 +36,29 @@ public class NoteMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_main, container, false);
+        initRecycler(view);
+        return view;
+    }
+
+    private void initRecycler(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
+
         AdapterItem adapterItem = new AdapterItem((ArrayList<NoteEntity>) notes);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL);
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator,null));
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
         recyclerView.setAdapter(adapterItem);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         adapterItem.setListener(
                 new AdapterItem.OnItemClickListenner() {
-                                    @Override
-                                    public void OnItemClick(int position) {
-                                        getContract().onNote(notes.get(position));
-                                    }
+                    @Override
+                    public void OnItemClick(int position) {
+                        getContract().onNote(notes.get(position));
+                    }
 
                     @Override
                     public void OnItemLongClick(View parent,int position) {
@@ -53,21 +66,22 @@ public class NoteMainFragment extends Fragment {
                         popupMenu.inflate(R.menu.popup_menu_note);
                         popupMenu.show();
                         popupMenu
-                            .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                @Override
+                                .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
                                     public boolean onMenuItemClick(MenuItem item) {
-                                    if (item.getItemId() == R.id.menu_note_delte) {
-                                        notes.remove(position);
-                                        return true;
+                                        if (item.getItemId() == R.id.menu_note_delte) {
+                                            notes.remove(position);
+                                            adapterItem.notifyDataSetChanged();
+                                            return true;
+                                        }
+                                        return false;
                                     }
-                                    return false;
-                        }
-                    });
+                                });
                     }
                 }
         );
-        return view;
     }
+
 
     @Override
     public void onViewCreated(View view,Bundle savedInstanceState) {
