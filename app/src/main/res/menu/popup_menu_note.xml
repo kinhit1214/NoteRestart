@@ -4,5 +4,8 @@
         <item
             android:id="@+id/menu_note_delte"
             android:title="Удалить"/>
+        <item
+            android:id="@+id/menu_note_red"
+            android:title="Редактировать"/>
     </group>
 </menu>

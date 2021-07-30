@@ -22,8 +22,9 @@ public class CreatNoteFragment extends Fragment {
     private Button cancelButton;
     private EditText titleEditText;
     private EditText themeEditText;
-    private EditText textEdittext;
+    private EditText textEditText;
 
+    private static final String NOTE_BOX_KEY="NOTE_BOX_KEY";
 
     public CreatNoteFragment() {
     }
@@ -31,16 +32,36 @@ public class CreatNoteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-     //   String strText = getArguments().getString("putNote");
         View view = inflater.inflate(R.layout.fragment_creat_note, container, false);
+
         saveButton = view.findViewById(R.id.save);
         cancelButton = view.findViewById(R.id.cancel);
-        textEdittext = view.findViewById(R.id.edit_text);
+        textEditText = view.findViewById(R.id.edit_text);
         titleEditText = view.findViewById(R.id.edit_name);
         themeEditText = view.findViewById(R.id.edit_theme);
-      //  if (strText!=null)
-       //     titleEditText.setText(String.format(Locale.getDefault(),"%s",strText));
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            String[] noteData = bundle.getStringArray(NOTE_BOX_KEY);
+            initNote(noteData);
+            if (noteData.length<4){
+                titleEditText.setFocusable(false);
+                titleEditText.setLongClickable(false);
+                themeEditText.setFocusable(false);
+                themeEditText.setLongClickable(false);
+                textEditText.setFocusable(false);
+                textEditText.setLongClickable(false);
+                saveButton.setVisibility(View.INVISIBLE);
+                cancelButton.setVisibility(View.INVISIBLE);
+            }
+        }
         return view;
+    }
+
+    private void initNote(String[] noteData) {
+        titleEditText.setText(noteData[0]);
+        themeEditText.setText(noteData[1]);
+        textEditText.setText(noteData[2]);
     }
 
     @Override
@@ -58,7 +79,7 @@ public class CreatNoteFragment extends Fragment {
         return new NoteEntity(
                 titleEditText.getText().toString(),
                 themeEditText.getText().toString(),
-                textEdittext.getText().toString());
+                textEditText.getText().toString());
     }
 
     @Override
@@ -73,5 +94,6 @@ public class CreatNoteFragment extends Fragment {
     }
     interface Contract{
         void onSaveNote(NoteEntity note);
+       // void onSaveRedNote()
     }
 }

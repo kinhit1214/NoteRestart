@@ -5,29 +5,11 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".NoteMainFragment"
-    android:background="@color/silver">
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:id="@+id/liner_notes"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/add_note">
-    </LinearLayout>
+   >
 
-<!--<com.google.android.material.button.MaterialButton-->
-    <Button
-        android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Новая заметка"
-    android:id="@+id/add_note"
-    android:backgroundTint="@color/grey"
-    android:textColor="@color/black"
-    app:layout_constraintTop_toBottomOf="@id/liner_notes"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"/>
-
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:listitem="@layout/note"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

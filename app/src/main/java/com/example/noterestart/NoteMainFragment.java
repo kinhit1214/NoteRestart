@@ -4,20 +4,26 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class NoteMainFragment extends Fragment {
-    private Button creatButton;
     private LinearLayout linerNotes;
 
     private ArrayList<NoteEntity> notes = new ArrayList<>();
@@ -30,48 +36,61 @@ public class NoteMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_main, container, false);
-        creatButton = view.findViewById(R.id.add_note);
-        linerNotes = view.findViewById(R.id.liner_notes);
-        renderList(notes);
+        initRecycler(view);
         return view;
     }
+
+    private void initRecycler(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+
+        AdapterItem adapterItem = new AdapterItem((ArrayList<NoteEntity>) notes);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL);
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator,null));
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
+        recyclerView.setAdapter(adapterItem);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        adapterItem.setListener(
+                new AdapterItem.OnItemClickListenner() {
+                    @Override
+                    public void OnItemClick(int position) {
+                        getContract().onNote(notes.get(position));
+                    }
+
+                    @Override
+                    public void OnItemLongClick(View parent,int position) {
+                        PopupMenu popupMenu = new PopupMenu(getContext(),parent);
+                        popupMenu.inflate(R.menu.popup_menu_note);
+                        popupMenu.show();
+                        popupMenu
+                                .setOnMenuItemClickListener(item -> {
+                                    switch (item.getItemId()){
+                                        case R.id.menu_note_delte:
+                                            notes.remove(position);
+                                            adapterItem.notifyDataSetChanged();
+                                            return true;
+                                        case R.id.menu_note_red:
+                                            getContract().onRedNote(notes.get(position),position);
+                                    }
+                                    return false;
+                                });
+                    }
+                }
+        );
+    }
+
 
     @Override
     public void onViewCreated(View view,Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        creatButton.setOnClickListener(v -> {
-            getContract().onCreatNote();
-        });
     }
+
     protected void addNote(NoteEntity note){
         notes.add(note);
     }
-
-    private void renderList(List<NoteEntity> notes) {
-        linerNotes.removeAllViews();
-        for (NoteEntity note :
-                notes) {
-            linerNotes.addView(generetNoteView(note));
-        }
-    }
-
-    private View generetNoteView(NoteEntity note) {
-        View noteView = getLayoutInflater().inflate(R.layout.note,null);
-        TextView noteTitle = (TextView) noteView.findViewById(R.id.note_title);
-        TextView noteTheme = (TextView) noteView.findViewById(R.id.note_theme);
-        TextView noteTime = (TextView) noteView.findViewById(R.id.note_time);
-        noteTitle.setText(String.format(Locale.getDefault(), "%s",note.title ));
-        noteTheme.setText(String.format(Locale.getDefault(), "%s", note.theme));
-        noteTime.setText(String.format(Locale.getDefault(), "%s", note.data));
-        noteView.setOnClickListener(v -> {
-            noteTitle.setText(String.format(Locale.getDefault(), "%s","Fdfds" ));
-            getContract().onNote(note);
-
-                }
-        );
-        return noteView;
-    }
-
 
     private Contract getContract(){
         return (Contract)getActivity();
@@ -85,7 +104,7 @@ public class NoteMainFragment extends Fragment {
         }
     }
     interface Contract{
-        void onCreatNote();
         void onNote(NoteEntity note);
+        void onRedNote(NoteEntity note,int position);
     }
 }
