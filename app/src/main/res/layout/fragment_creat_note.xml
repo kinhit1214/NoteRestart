@@ -43,6 +43,14 @@
             android:id="@+id/edit_theme"
             android:elevation="1dp" />
     </LinearLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="установить дату"
+        android:id="@+id/button_init_data"
+        android:elevation="@dimen/card_elevation"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"/>
 
     <androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
         android:layout_width="match_parent"

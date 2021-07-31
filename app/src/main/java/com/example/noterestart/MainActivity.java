@@ -15,9 +15,12 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity implements NoteMainFragment.Contract, CreatNoteFragment.Contract {
+import java.util.GregorianCalendar;
+
+public class MainActivity extends AppCompatActivity implements NoteMainFragment.Contract, CreatNoteFragment.Contract, DataPickerFragment.Contract {
 
     private static final String NOTE_BOX_KEY="NOTE_BOX_KEY";
+    private static final String NOTE_CREAT_TAG = "NOTE_CREAT_TAG";
 
     NoteMainFragment noteMainFragment = new NoteMainFragment();
 
@@ -30,10 +33,13 @@ public class MainActivity extends AppCompatActivity implements NoteMainFragment.
     }
 
     public void showNote(NoteEntity note) {
+
         Bundle bundle = new Bundle();
-        bundle.putStringArray(NOTE_BOX_KEY,new String[]{note.title,note.theme,note.text});
+        bundle.putStringArray(NOTE_BOX_KEY,new String[]{note.title,note.theme,note.text,note.data});
+
         Fragment fragNote = new CreatNoteFragment();
         fragNote.setArguments(bundle);
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container_fragments,fragNote)
@@ -52,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NoteMainFragment.
     private void showNoteMain() {
         getSupportFragmentManager()
                 .beginTransaction().
-                add(R.id.container_fragments,noteMainFragment)
+                replace(R.id.container_fragments,noteMainFragment)
                 .commitAllowingStateLoss();
     }
 
@@ -60,18 +66,25 @@ public class MainActivity extends AppCompatActivity implements NoteMainFragment.
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(null)
-                .replace(R.id.container_fragments,new CreatNoteFragment())
+                .replace(R.id.container_fragments,new CreatNoteFragment(),NOTE_CREAT_TAG)
                 .commitAllowingStateLoss();
     }
 
     private void showRedNote(NoteEntity note,int position) {
         Bundle bundle = new Bundle();
-        bundle.putStringArray(NOTE_BOX_KEY,new String[]{note.title,note.theme,note.text,String.valueOf(position)});
+        bundle.putStringArray(NOTE_BOX_KEY,new String[]{note.title,note.theme,note.text,note.data,String.valueOf(position)});
         Fragment fragRedNote = new CreatNoteFragment();
         fragRedNote.setArguments(bundle);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container_fragments,fragRedNote)
+                .commitAllowingStateLoss();
+    }
+
+    private void showDataPicker() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container_fragments,new DataPickerFragment())
                 .commitAllowingStateLoss();
     }
 
@@ -115,5 +128,20 @@ public class MainActivity extends AppCompatActivity implements NoteMainFragment.
     public void onSaveNote(NoteEntity note) {
         getSupportFragmentManager().popBackStack();
         noteMainFragment.addNote(note);
+    }
+
+    @Override
+    public void onDataPicker() {
+        showDataPicker();
+    }
+
+    @Override
+    public void saveData(GregorianCalendar calendar) {
+        CreatNoteFragment noteCreat = (CreatNoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE_CREAT_TAG);
+        noteCreat.setData(calendar);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container_fragments,noteCreat,NOTE_CREAT_TAG)
+                .commitAllowingStateLoss();
     }
 }

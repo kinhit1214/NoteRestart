@@ -37,8 +37,8 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.ItemViewHolder
     @Override
     public void onBindViewHolder(@NonNull AdapterItem.ItemViewHolder holder, int position) {
         holder.getNoteTitle().setText(notes.get(position).title);
-        holder.getNoteTheme().setText(notes.get(position).text);
-        holder.getNoteTime().setText(notes.get(position).data);
+        holder.getNoteTheme().setText(notes.get(position).theme);
+        holder.getNoteTime().setText(notes.get(position).data.toString());
     }
 
     @Override

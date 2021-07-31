@@ -2,10 +2,13 @@ package com.example.noterestart;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class NoteEntity implements Parcelable {
@@ -13,20 +16,34 @@ public class NoteEntity implements Parcelable {
     public final String title;
     public final String theme;
     public final String text;
-    public final String data;
+    public String data;
 
     public NoteEntity(String title, String theme, String text) {
-        id = (Math.random()*100000)+"";
+        id = String.valueOf(Math.random()*100000);
         this.title = title;
         this.theme = theme;
         this.text = text;
         data = getCurrentData();
     }
-    public static String getCurrentData(){
+
+    public NoteEntity(String title, String theme, String text,GregorianCalendar calendar) {
+        id = (Math.random()*100000)+"";
+        this.title = title;
+        this.theme = theme;
+        this.text = text;
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        data = dateFormat.format(calendar.getTime());
+    }
+
+    public String getCurrentData(){
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         return dateFormat.format(Calendar.getInstance().getTimeInMillis());
     }
 
+    public String getData(int year, int monthOfYear, int dayOfMonth){
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        return dateFormat.format(new GregorianCalendar(year,monthOfYear,dayOfMonth));
+    }
     public String getId(){
         return id;
     }

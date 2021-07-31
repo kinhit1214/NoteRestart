@@ -33,6 +33,7 @@
             android:layout_marginStart="@dimen/separator"
             android:text="Theme note"
             android:textSize="@dimen/text_size_theme"
+            android:singleLine="true"
             android:textColor="@color/black"/>
 
         <com.google.android.material.textview.MaterialTextView
