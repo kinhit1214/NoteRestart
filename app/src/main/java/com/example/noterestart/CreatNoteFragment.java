@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 
@@ -23,6 +25,8 @@ public class CreatNoteFragment extends Fragment {
     private EditText titleEditText;
     private EditText themeEditText;
     private EditText textEditText;
+    private Button dataButton;
+    private GregorianCalendar calendar;
 
     private static final String NOTE_BOX_KEY="NOTE_BOX_KEY";
 
@@ -33,7 +37,7 @@ public class CreatNoteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_creat_note, container, false);
-
+        dataButton = view.findViewById(R.id.button_init_data);
         saveButton = view.findViewById(R.id.save);
         cancelButton = view.findViewById(R.id.cancel);
         textEditText = view.findViewById(R.id.edit_text);
@@ -44,7 +48,7 @@ public class CreatNoteFragment extends Fragment {
         if (bundle != null) {
             String[] noteData = bundle.getStringArray(NOTE_BOX_KEY);
             initNote(noteData);
-            if (noteData.length<4){
+            if (noteData.length<5){
                 titleEditText.setFocusable(false);
                 titleEditText.setLongClickable(false);
                 themeEditText.setFocusable(false);
@@ -53,6 +57,8 @@ public class CreatNoteFragment extends Fragment {
                 textEditText.setLongClickable(false);
                 saveButton.setVisibility(View.INVISIBLE);
                 cancelButton.setVisibility(View.INVISIBLE);
+                dataButton.setEnabled(false);
+                dataButton.setText(getString(R.string.DataString).concat(noteData[3]));
             }
         }
         return view;
@@ -67,6 +73,9 @@ public class CreatNoteFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        dataButton.setOnClickListener(v -> {
+            getContract().onDataPicker();
+        });
         saveButton.setOnClickListener(v -> {
             getContract().onSaveNote(gatherNote());
         });
@@ -76,11 +85,19 @@ public class CreatNoteFragment extends Fragment {
     }
 
     private NoteEntity gatherNote() {
+        if (calendar != null)
+            return new NoteEntity(
+                    titleEditText.getText().toString(),
+                    themeEditText.getText().toString(),
+                    textEditText.getText().toString(),
+                    calendar);
         return new NoteEntity(
                 titleEditText.getText().toString(),
                 themeEditText.getText().toString(),
                 textEditText.getText().toString());
     }
+
+    protected void setData(GregorianCalendar calendar){this.calendar = calendar;}
 
     @Override
     public void onAttach(Context context) {
@@ -92,8 +109,9 @@ public class CreatNoteFragment extends Fragment {
     private Contract getContract(){
         return (Contract)getActivity();
     }
+
     interface Contract{
         void onSaveNote(NoteEntity note);
-       // void onSaveRedNote()
+        void onDataPicker();
     }
 }
